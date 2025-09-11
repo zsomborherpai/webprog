@@ -1,0 +1,23 @@
+div
+{
+    height: 300px;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
+}
+div:first-child
+{
+    background-color: green;
+    flex-shrink: 2;
+}
+div:nth-child(2)
+{
+    background-color: yellow;
+    flex-grow: 4;
+}
+div:last-child
+{
+    background-color: purple;
+    flex-shrink: 2;
+}

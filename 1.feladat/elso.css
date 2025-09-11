@@ -1,0 +1,19 @@
+div
+{
+    height: 300px;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+div:first-child
+{
+    background-color: green;
+}
+div:nth-child(2)
+{
+    background-color: yellow;
+}
+div:last-child
+{
+    background-color: purple;
+}
