@@ -1,7 +1,0 @@
-J:\12\C#\fogadóóra\fogadoora\bin\Debug\fogadoora.exe.config
-J:\12\C#\fogadóóra\fogadoora\bin\Debug\fogadoora.exe
-J:\12\C#\fogadóóra\fogadoora\bin\Debug\fogadoora.pdb
-J:\12\C#\fogadóóra\fogadoora\obj\Debug\fogadoora.csproj.AssemblyReference.cache
-J:\12\C#\fogadóóra\fogadoora\obj\Debug\fogadoora.csproj.CoreCompileInputs.cache
-J:\12\C#\fogadóóra\fogadoora\obj\Debug\fogadoora.exe
-J:\12\C#\fogadóóra\fogadoora\obj\Debug\fogadoora.pdb
