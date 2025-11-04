@@ -22,8 +22,7 @@
             background: none;
             color: inherit;
         }
-        #errorMessage {
-            color: red;
+        #message {          
             margin-top: 10px;
             font-weight: bold;
         }
@@ -37,7 +36,7 @@
             <input type="password" class="form-control my-2" placeholder="Jelszó" id="password">
             <input type="password" class="form-control my-2" placeholder="Jelszó újra" id="password2">
             <button id="submitButton" class="btn w-100 mt-2">Regisztrálok</button>
-            <div id="errorMessage"></div>
+            <div id="message"></div>
         </div>
     </div>
 
@@ -46,7 +45,7 @@
         const email = document.getElementById("email");
         const password = document.getElementById("password");
         const password2 = document.getElementById("password2");
-        const errorMessage = document.getElementById("errorMessage");
+        const message = document.getElementById("message");
 
         function isValidEmail(emailValue) {
             const pattern = /^[^@]+@[^@]+\.[a-zA-Z]{2,3}$/;
@@ -54,24 +53,28 @@
         }
 
         submitButton.addEventListener("click", () => {
-            errorMessage.textContent = "";
+            message.textContent = "";
 
             if (!isValidEmail(email.value)) {
-                errorMessage.textContent = "Hibás e-mail formátum!";
+                message.style.color = "red";
+                message.textContent = "Hibás e-mail formátum!";
                 return;
             }
 
             if (password.value === "" || password2.value === "") {
-                errorMessage.textContent = "A jelszó mezők nem lehetnek üresek!";
+                message.style.color = "red";
+                message.textContent = "A jelszó mezők nem lehetnek üresek!";
                 return;
             }
 
             if (password.value !== password2.value) {
-                errorMessage.textContent = "A két jelszó nem egyezik!";
+                message.style.color = "red";
+                message.textContent = "A két jelszó nem egyezik!";
                 return;
             }
 
-            alert("Sikeres regisztráció!");
+            message.style.color = "green";
+            message.textContent = "Sikeres regisztráció!";
             console.log(`Felhasználó e-mailje: ${email.value}`);
             console.log(`Jelszó: ${password.value}`);
         });
