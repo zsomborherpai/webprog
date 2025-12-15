@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recept Nyilvántartó</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 { text-align: center; color: #2c3e50; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; 
+        }
+        textarea { height: 80px; resize: vertical; }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-save { background-color: #27ae60; color: white; width: 100%; font-size: 16px; }
+        .btn-save:hover { background-color: #219150; }
+
+        .btn-edit { background-color: #f39c12; color: white; margin-right: 5px; }
+        .btn-delete { background-color: #c0392b; color: white; }
+        .recipe-list { margin-top: 30px; }
+        .recipe-card {
+            background: #fff;
+            border-left: 5px solid #3498db;
+            border: 1px solid #e1e1e1;
+            border-left-width: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            position: relative;
+        }
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .recipe-title { font-size: 1.2em; font-weight: bold; color: #2980b9; }
+        .recipe-details p { margin: 5px 0; }
+        .label-text { font-weight: bold; color: #555; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Recept Nyilvántartó</h1>
+
+    <div class="form-section">
+        <h2>Új recept / Szerkesztés</h2>
+        <form id="recipeForm">
+            <input type="hidden" id="recipeId"> <div class="form-group">
+                <label for="name">Recept neve:</label>
+                <input type="text" id="name" placeholder="Pl.: Palacsinta" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="ingredients">Hozzávalók (vesszővel elválasztva):</label>
+                <input type="text" id="ingredients" placeholder="Pl.: liszt, tojás, tej, szóda" required>
+            </div>
+
+            <div class="form-group">
+                <label for="method">Elkészítés leírása:</label>
+                <textarea id="method" placeholder="Írd le a lépéseket..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-save" id="saveBtn">Recept Mentése</button>
+            <button type="button" id="cancelBtn" style="display:none; margin-top:10px; width:100%; background:#95a5a6; color:white;">Mégse</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="recipe-list" id="recipeContainer">
+        </div>
+</div>
+
+<script>
+
+    let receptek = JSON.parse(localStorage.getItem('receptek')) || [];
+
+    const form = document.getElementById('recipeForm');
+    const container = document.getElementById('recipeContainer');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    
+    const idInput = document.getElementById('recipeId');
+    const nameInput = document.getElementById('name');
+    const ingInput = document.getElementById('ingredients');
+    const methodInput = document.getElementById('method');
+
+    function renderReceptek() {
+        container.innerHTML = ''; 
+
+        if (receptek.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#777;">Nincs rögzített recept. Adj hozzá egyet!</p>';
+            return;
+        }
+
+        receptek.forEach(recept => {
+            const card = document.createElement('div');
+            card.className = 'recipe-card';
+
+            card.innerHTML = `
+                <div class="recipe-header">
+                    <span class="recipe-title">${recept.nev}</span>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="szerkesztesInditasa(${recept.id})">Szerkesztés</button>
+                        <button class="btn-delete" onclick="torles(${recept.id})">Törlés</button>
+                    </div>
+                </div>
+                <div class="recipe-details">
+                    <p><span class="label-text">Hozzávalók:</span> ${recept.hozzavalok}</p>
+                    <p><span class="label-text">Elkészítés:</span><br> ${recept.leiras}</p>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); 
+
+        const id = idInput.value;
+        const nev = nameInput.value;
+        const hozzavalok = ingInput.value;
+        const leiras = methodInput.value;
+
+        if (id) {
+            const index = receptek.findIndex(r => r.id == id);
+            if (index > -1) {
+                receptek[index] = { 
+                    id: parseInt(id), 
+                    nev, 
+                    hozzavalok, 
+                    leiras 
+                };
+            }
+        } else {
+            const ujRecept = {
+                id: Date.now(),
+                nev: nev,
+                hozzavalok: hozzavalok,
+                leiras: leiras
+            };
+            receptek.push(ujRecept);
+        }
+
+        adatokMentese();
+        urlapAlaphelyzet();
+        renderReceptek();
+    });
+
+    window.torles = function(id) {
+        if (confirm('Biztosan törölni szeretnéd ezt a receptet?')) {
+            receptek = receptek.filter(recept => recept.id !== id);
+            adatokMentese();
+            renderReceptek();
+            if (idInput.value == id) {
+                urlapAlaphelyzet();
+            }
+        }
+    };
+
+    window.szerkesztesInditasa = function(id) {
+        const recept = receptek.find(r => r.id === id);
+        if (recept) {
+            idInput.value = recept.id;
+            nameInput.value = recept.nev;
+            ingInput.value = recept.hozzavalok;
+            methodInput.value = recept.leiras;
+
+            saveBtn.textContent = 'Módosítás mentése';
+            saveBtn.style.backgroundColor = '#f39c12';
+            cancelBtn.style.display = 'block';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    function adatokMentese() {
+        localStorage.setItem('receptek', JSON.stringify(receptek));
+    }
+
+    function urlapAlaphelyzet() {
+        form.reset();
+        idInput.value = '';
+        saveBtn.textContent = 'Recept mentése';
+        saveBtn.style.backgroundColor = '#27ae60';
+        cancelBtn.style.display = 'none';
+    }
+
+    cancelBtn.addEventListener('click', urlapAlaphelyzet);
+
+    renderReceptek();
+
+</script>
+
+</body>
+</html>
