@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Directory</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            display: flex;
+            justify-content: center;
+            padding: 50px 0;
+        }
+
+        .table-container {
+            width: 90%;
+            max-width: 1000px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #1e3c72;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        thead {
+            background-color: #1e3c72;
+            color: #ffffff;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        tbody tr:nth-of-type(even) {
+            background-color: #f1f5fb;
+        }
+
+        tbody tr:hover {
+            background-color: #dbe9ff;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        #status-message {
+            text-align: center;
+            padding: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .error {
+            color: #d9534f !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="table-container">
+    <h1>Phone List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Camera</th>
+            </tr>
+        </thead>
+        <tbody id="phone-table-body"></tbody>
+    </table>
+
+    <div id="status-message">Loading data...</div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchPhones();
+    });
+
+    async function fetchPhones() {
+        const tableBody = document.getElementById("phone-table-body");
+        const statusMessage = document.getElementById("status-message");
+
+        try {
+            const response = await fetch('https://surveys-5jvt.onrender.com/api/phones/');
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const phones = await response.json();
+
+
+            console.log("Phones from API:", phones);
+
+            statusMessage.style.display = 'none';
+
+            const fragment = document.createDocumentFragment();
+
+            phones.forEach(phone => {
+                console.log("Phone object:", phone);
+
+                const row = document.createElement("tr");
+
+                row.appendChild(createCell(phone.id));
+                row.appendChild(createCell(phone.brand));
+                row.appendChild(createCell(phone.model));
+                row.appendChild(createCell(phone.camera));
+
+                fragment.appendChild(row);
+            });
+
+            tableBody.appendChild(fragment);
+
+        } catch (error) {
+            console.error("Fetch error:", error);
+            statusMessage.textContent = "Failed to load data. Please try again later.";
+            statusMessage.classList.add("error");
+        }
+    }
+
+    function createCell(text) {
+        const td = document.createElement("td");
+        td.textContent = text ?? "-";
+        return td;
+    }
+</script>
+
+</body>
+</html>
