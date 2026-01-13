@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orai</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            background: #fff;
+        }
+
+        .page {
+            width: 95%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .header {
+            background: red;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            padding-left: 30px;
+            gap: 25px;
+        }
+
+        .content {
+            display: flex;
+            gap: 15px;
+            min-height: 400px;
+        }
+        .sidebar {
+            background: #0099ff;
+            width: 180px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main {
+            background: #2db34a;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gray {
+            background: #ccc;
+            height: 25px;
+        }
+
+        .header .gray {
+            width: 100px;
+        }
+
+        .sidebar .gray {
+            width: 100%;
+        }
+
+        .main .gray {
+            width: 50%;
+            height: 150px;
+            background: #888;
+        }
+
+        @media (max-width: 700px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar .gray {
+                width: 30%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="header">
+        <div class="gray"></div>
+        <div class="gray"></div>
+        <div class="gray"></div>
+        <div class="gray"></div>
+    </div>
+
+    <div class="content">
+
+        <div class="sidebar">
+            <div class="gray"></div>
+            <div class="gray"></div>
+            <div class="gray"></div>
+            <div class="gray"></div>
+            <div class="gray"></div>
+        </div>
+
+        <div class="main">
+            <div class="gray"></div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
