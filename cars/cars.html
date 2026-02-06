@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Autók</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .cars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      background: #f5f5f5;
+    }
+
+    form {
+      margin-top: 20px;
+      max-width: 300px;
+    }
+
+    input, button {
+      margin: 5px 0;
+      width: 100%;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Autók listája</h1>
+
+<div class="cars" id="cars"></div>
+
+<h2>Autó részletei</h2>
+<div id="details"></div>
+
+<h2>Új autó hozzáadása</h2>
+<form id="carForm">
+  <input type="text" id="brand" placeholder="Márka" required />
+  <input type="text" id="model" placeholder="Modell" required />
+  <input type="number" id="year" placeholder="Évjárat" required />
+  <button type="submit">Mentés</button>
+</form>
+
+<h2>Autó módosítása</h2>
+<form id="editForm" style="display:none;">
+  <input type="text" id="editBrand" placeholder="Márka" required />
+  <input type="text" id="editModel" placeholder="Modell" required />
+  <input type="number" id="editYear" placeholder="Évjárat" required />
+  <button type="submit">Módosítás</button>
+</form>
+
+<script>
+const link = "https://surveys-5jvt.onrender.com/api/cars";
+const carsDiv = document.getElementById("cars");
+const detailsDiv = document.getElementById("details");
+const editForm = document.getElementById("editForm");
+
+let selectedCarId = null;
+
+function loadCars() {
+  fetch(link, { method: "GET" })
+    .then(res => res.json())
+    .then(cars => {
+      carsDiv.innerHTML = "";
+      cars.forEach(car => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <strong>${car.model}</strong><br>
+          <button onclick="deleteCar(${car.id})" ${car.id <= 4 ? "hidden" : ""}>
+            Törlés
+          </button>
+        `;
+        div.onclick = () => loadCarDetails(car.id);
+        carsDiv.appendChild(div);
+      });
+    })
+    .catch(() => alert("Hiba az autók lekérésekor"));
+}
+
+function loadCarDetails(id) {
+  fetch(`${link}/${id}`)
+    .then(res => res.json())
+    .then(car => {
+      selectedCarId = car.id;
+
+      detailsDiv.innerHTML = `
+        <p><strong>ID:</strong> ${car.id}</p>
+        <p><strong>Márka:</strong> ${car.brand}</p>
+        <p><strong>Modell:</strong> ${car.model}</p>
+        <p><strong>Év:</strong> ${car.year}</p>
+      `;
+
+      if (car.id > 4) {
+        editForm.style.display = "block";
+        editBrand.value = car.brand;
+        editModel.value = car.model;
+        editYear.value = car.year;
+      } else {
+        editForm.style.display = "none";
+      }
+    })
+    .catch(() => alert("Nem sikerült betölteni az autót"));
+}
+
+document.getElementById("carForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const newCar = {
+    brand: brand.value,
+    model: model.value,
+    year: Number(year.value)
+  };
+
+  fetch(link, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newCar)
+  })
+    .then(res => res.json())
+    .then(car => {
+      loadCars();
+      loadCarDetails(car.id);
+      e.target.reset();
+    })
+    .catch(() => alert("Nem sikerült menteni az autót"));
+});
+
+editForm.addEventListener("submit", e => {
+  e.preventDefault();
+
+  const updatedCar = {
+    brand: editBrand.value,
+    model: editModel.value,
+    year: Number(editYear.value)
+  };
+
+  fetch(`${link}/${selectedCarId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedCar)
+  })
+    .then(res => res.json())
+    .then(() => {
+      loadCars();
+      loadCarDetails(selectedCarId);
+      alert("Autó módosítva");
+    })
+    .catch(() => alert("Nem sikerült módosítani az autót"));
+});
+
+function deleteCar(id) {
+  if (!confirm("Biztos törlöd?")) return;
+
+  fetch(`${link}/${id}`, { method: "DELETE" })
+    .then(res => {
+      if (!res.ok) throw new Error();
+      loadCars();
+      detailsDiv.innerHTML = "";
+      editForm.style.display = "none";
+    })
+    .catch(() => alert("Nem törölhető az autó"));
+}
+
+loadCars();
+</script>
+
+</body>
+</html>
