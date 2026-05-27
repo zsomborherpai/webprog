@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bolti Terméknyilvántartó</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Bolti Terméknyilvántartó Rendszer</h1>
+
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Termék keresése anyag alapján"
+        />
+      </div>
+
+      <table id="productsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Termék név</th>
+            <th>Súly (kg)</th>
+            <th>Anyag</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="action-buttons">
+        <button id="btnNew" class="btn btn-success">Új áru</button>
+        <button id="btnEdit" class="btn btn-warning" disabled>Módosítás</button>
+        <button id="btnDelete" class="btn btn-danger" disabled>Törlés</button>
+      </div>
+
+      <div id="formModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="modalTitle">Új termék hozzáadása</h3>
+          <form id="productForm">
+            <input type="hidden" id="productId" />
+            <div class="form-group">
+              <label for="pName">Név:</label>
+              <input type="text" id="pName" required />
+            </div>
+            <div class="form-group">
+              <label for="pWeight">Súly (kg):</label>
+              <input type="number" id="pWeight" step="0.1" required />
+            </div>
+            <div class="form-group">
+              <label for="pMaterial">Anyag:</label>
+              <input type="text" id="pMaterial" required />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-success">Mentés</button>
+              <button type="button" id="btnCancel" class="btn btn-secondary">
+                Mégse
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
