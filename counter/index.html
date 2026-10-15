@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Counter</title>
+  </head>
+  <body>
+    <header>Counter</header>
+    <div>
+      <span>Counter value:</span>
+      <br />
+      <span id="counter">0</span>
+      <br />
+      <button class="oneButton" onclick="plusCounter(1)">+</button>
+      <button class="oneButton" onclick="minusCounter(1)">-</button>
+      <br />
+      <button class="tenButton" onclick="plusCounter(10)">+10</button>
+      <button class="tenButton" onclick="minusCounter(10)">-10</button>
+    </div>
+  </body>
+  <script>
+    const count = document.getElementById("counter");
+    const plusCounter = (num) => {
+      count.textContent = Number(count.textContent) + Number(num);
+    };
+    const minusCounter = (num) => {
+      count.textContent = Number(count.textContent) - Number(num);
+    };
+  </script>
+</html>
